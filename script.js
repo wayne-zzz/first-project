@@ -13,6 +13,8 @@ var Index = 0;
 
 var taskArray = []
 
+let editMode = false;
+
 // '+' button functionality
 addBtn.addEventListener('click', (e) => {
     
@@ -31,12 +33,10 @@ addBtn.addEventListener('click', (e) => {
 // 'Add' button functionality
 createBtn.addEventListener('click', (e) => {
 
-    // For tracking Index purposes
-    Index += 1;
     const x = inputBar.value;
     const y = dueBar.value;
     const z = priBar.value;
-
+    
     //Error message when any bar is empty
     if(x.trim() === "" || y.trim() === "" || z.trim() === ""){
         inputBar.setAttribute('placeholder', 'Task bar empty! Please enter a task before adding');
@@ -44,55 +44,22 @@ createBtn.addEventListener('click', (e) => {
         priBar.setAttribute('placeholder', 'Priority bar empty! Please enter a number before adding');
         return;
     }
+    
+    // For tracking Index purposes
+    Index += 1;
 
     // Adding task into Array
-    taskArray.push(
-        { Task: `${x}`, Due: `${y}`, Priority: `${z}` }
-    );
+    taskArray.push({
+        id: Index,
+        Task: x, 
+        Due: y, 
+        Priority: Number(z)
+    });
     
-    taskArray.forEach((item) => {
-        
-        // To store Task and Editors in one div
-        const taskDiv = document.createElement('div');
-        taskCtr.appendChild(taskDiv);
+    // Render tasks
+    renderTasks();
     
-        // Creating Task
-        const task = document.createElement('p');
-        task.setAttribute('class', 'Task');
-        task.textContent = item.Task;
-        task.style.display = "inline"
-        
-        const dueDate = document.createElement('p');
-        dueDate.setAttribute('class', 'Due');
-        dueDate.textContent = item.Due;
-        dueDate.style.display = "flex"
-
-        // To store Editors in one div
-        const editors = document.createElement('div');
-        editors.className = "editors";
-        editors.style.display = "none";
-    
-        // Creating edit Editor
-        const editTask = document.createElement('button');
-        editTask.setAttribute('id', `Edit_${Index}`);
-        editTask.className = "editTools"
-        editTask.textContent = '✍️';
-        
-        // Creating delete Editor
-        const deleteTask = document.createElement('button');
-        deleteTask.setAttribute('id', `Delete_${Index}`);
-        deleteTask.className = "editTools"
-        deleteTask.textContent = '🗑️';
-        console.log(taskArray);
-    
-        // Adding to index.html
-        taskDiv.appendChild(task);
-        taskDiv.appendChild(dueDate);
-        taskDiv.appendChild(editors);
-        editors.appendChild(editTask);
-        editors.appendChild(deleteTask);
-    })
-
+    console.log(taskArray);
 
     // Reseting Input bar
     inputBar.value = '';
@@ -112,7 +79,7 @@ createBtn.addEventListener('click', (e) => {
     //Resets placeholder
     priBar.setAttribute('placeholder', 'Enter Priority here');
 
-})
+});
 
 // Functionality of 'close' button for '+'
 closeBtn.addEventListener('click', (e) => {
@@ -136,7 +103,7 @@ closeBtn.addEventListener('click', (e) => {
     //Resets placeholder
     priBar.setAttribute('placeholder', 'Enter Priority here');
 
-})
+});
 
 // Functionality of 'EDIT' button
 editBtn.addEventListener('click', (e) => {
@@ -158,11 +125,10 @@ editBtn.addEventListener('click', (e) => {
     priBar.setAttribute('placeholder', 'Enter Priority here');
 
     //Shows tool buttons
-    for(let i = 0; i < tools.length; i++){
-        tools[i].style.display = "inline";
-    }
+    editMode = true;
+    renderTasks();
     
-})
+});
 
 //Functionality of CANCEL button
 uneditBtn.addEventListener('click', (e) => {
@@ -175,7 +141,63 @@ uneditBtn.addEventListener('click', (e) => {
     const tools = document.getElementsByClassName("editors");
     
     //Hides tool buttons
-    for(let i = 0; i < tools.length; i++){
-        tools[i].style.display = "none";
-    }
-})
+    editMode = false;
+    renderTasks();
+});
+
+
+
+
+
+const renderTasks = () => {
+
+    taskCtr.replaceChildren()
+
+    taskArray.forEach((item) => {
+        
+        // To store Task and Editors in one div
+        const taskDiv = document.createElement('div');
+        
+        // Creating Task
+        const task = document.createElement('p');
+        task.textContent = item.Task;
+        
+        const dueDate = document.createElement('p');
+        dueDate.textContent = item.Due;
+        
+        // To store Editors in one div
+        const editors = document.createElement('div');
+        editors.className = 'editors'
+        
+        // Creating edit Editor
+        const editTask = document.createElement('button');
+        editTask.textContent = '✍️';
+        
+        // Creating delete Editor
+        const deleteTask = document.createElement('button');
+        deleteTask.textContent = '🗑️';
+
+        deleteTask.addEventListener('click', () => {
+            taskArray = taskArray.filter(task => task.id !== item.id);
+
+            renderTasks();
+        });
+
+        if(editMode){
+            editors.style.display = "inline";
+        }
+        else{
+            editors.style.display = "none";
+        }
+        
+        // Adding to index.html
+        editors.appendChild(editTask);
+        editors.appendChild(deleteTask);
+        
+        taskDiv.appendChild(task);
+        taskDiv.appendChild(dueDate);
+        taskDiv.appendChild(editors);
+
+        taskCtr.appendChild(taskDiv);
+    })
+}

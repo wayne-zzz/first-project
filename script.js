@@ -10,11 +10,19 @@ const editBtn = document.getElementById("editBtn");
 const uneditBtn = document.getElementById("uneditBtn");
 const selectedSort = document.getElementById("sort");
 
-var Index = 0;
 
-var taskArray = [];
+/* YET TO UNDERSTAND‼️*/
+var Index = taskArray.reduce((max, task) => {
+    return Math.max(max, task.id);
+}, 0);
+
+const retrievedData = localStorage.getItem('savedTasks');
+const retrievedTasks = JSON.parse(retrievedData) || [];
+
+var taskArray = [...retrievedTasks];
 
 let editMode = false;
+
 
 // '+' button functionality
 addBtn.addEventListener('click', (e) => {
@@ -58,9 +66,7 @@ createBtn.addEventListener('click', (e) => {
     });
     
     // Render tasks
-    renderTasks();
-    
-    sortTasksByCategory();
+    updateApp();
     
     // Reseting Input bar
     inputBar.value = '';
@@ -71,14 +77,8 @@ createBtn.addEventListener('click', (e) => {
     // Reseting Priority bar
     priBar.value = '';
     
-    //Resets placeholder
-    inputBar.setAttribute('placeholder', 'Enter task here');
-    
-    //Resets placeholder
-    dueBar.setAttribute('placeholder', 'Enter Due Date here');
-    
-    //Resets placeholder
-    priBar.setAttribute('placeholder', 'Enter Priority here');
+    // Resets placeholder
+    resetPlaceholders();
     
 });
 
@@ -109,9 +109,6 @@ editBtn.addEventListener('click', (e) => {
     editBtn.style.display = "none";
     uneditBtn.style.display = "";
     
-    // Copies all editors into an array 
-    const tools = document.getElementsByClassName("editors");
-    
     // Resets placeholder
     resetPlaceholders();
     
@@ -128,9 +125,6 @@ uneditBtn.addEventListener('click', (e) => {
     // Toggles buttons
     uneditBtn.style.display = "none";
     editBtn.style.display = "";
-    
-    // Copies all editors into an array 
-    const tools = document.getElementsByClassName("editors");
     
     // Hides tool buttons
     editMode = false;
@@ -170,9 +164,6 @@ const renderTasks = () => {
         
         deleteTask.addEventListener('click', () => {
             taskArray = taskArray.filter(task => task.id !== item.id);
-            
-            renderTasks();
-        });
         
         
         // Functionality of editMode
@@ -192,50 +183,62 @@ const renderTasks = () => {
         taskDiv.appendChild(editors);
         
         taskCtr.appendChild(taskDiv);
-    })
+        
+    });
+
 };
 
-let sortedArray = taskArray;
 
 function resetPlaceholders(){
     // Resets input bar placeholder
     inputBar.setAttribute('placeholder', 'Enter task here');
-
+    
     // Resets due bar placeholder
     dueBar.setAttribute('placeholder', 'Enter Due Date here');
-
+    
     // Resets priority bar placeholder
     priBar.setAttribute('placeholder', 'Enter Priority here');
 };
 
 
 function sortTasksByCategory(){
-
+    
     let sortedArray = [...taskArray];
-
+    
     switch(selectedSort.value){
         case "Due_date":
             // Sort by 'Due', smallest to largest date
             sortedArray.sort((a, b) => {
                 return new Date(a.Due) - new Date(b.Due);
             });
-
+            
             break;
             
-        case "Priority": 
-
+            case "Priority": 
+            
             // Sort by 'Priority', smallest to largest number
             sortedArray.sort((a, b) => {
                 return a.Priority - b.Priority;
             });
-
+            
             break;
             
+        };
+        
+        return sortedArray;
     };
+    
+    selectedSort.addEventListener('change', () => {
+        renderTasks();
+    });
 
-    return sortedArray
-};
-
-selectedSort.addEventListener('change', () => {
+    const saveTasksStorage = () => {
+        localStorage.setItem('savedTasks', JSON.stringify(taskArray));
+    };
+    
+    function updateApp(){
+        renderTasks();
+        saveTasksStorage();
+    }
+    
     renderTasks();
-});

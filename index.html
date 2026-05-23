@@ -27,12 +27,18 @@
 
     <div id="taskBar" style="display: none">
         <input id="inputBar" type="text" placeholder="Enter Task">
-        <input id="dueBar" type="text" placeholder="Enter Due Date">
-        <input id="priBar" type="text" placeholder="Enter Value">
+        <input id="dueBar" type="date" placeholder="Enter Due Date">
+        <input id="priBar" type="number" placeholder="Enter Value">
         <button id="createBtn">Add</button>
     </div>
 
     <p>Tasks:</p>
+
+    <label for="sort by">Sort by</label>
+    <select name="sort by" id="sort">
+        <option value="Due_date">Due Date</option>
+        <option value="Priority">Priority</option>
+    </select>
 
     <div id="taskCtr">
         

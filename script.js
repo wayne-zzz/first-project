@@ -8,10 +8,11 @@ const inputBar = document.getElementById("inputBar");
 const createBtn = document.getElementById("createBtn");
 const editBtn = document.getElementById("editBtn");
 const uneditBtn = document.getElementById("uneditBtn");
+const selectedSort = document.getElementById("sort");
 
 var Index = 0;
 
-var taskArray = []
+var taskArray = [];
 
 let editMode = false;
 
@@ -21,18 +22,18 @@ addBtn.addEventListener('click', (e) => {
     // 1. Toggling '+' and 'close' buttons
     addBtn.style.display = "none"; 
     closeBtn.style.display = "";
-
+    
     // 2. Task bar appears
     taskBar.style.display = "";
-
+    
     // 3. All tasks dim out
     taskCtr.style.opacity = "0.5";
-
 })
+
 
 // 'Add' button functionality
 createBtn.addEventListener('click', (e) => {
-
+    
     const x = inputBar.value;
     const y = dueBar.value;
     const z = priBar.value;
@@ -47,7 +48,7 @@ createBtn.addEventListener('click', (e) => {
     
     // For tracking Index purposes
     Index += 1;
-
+    
     // Adding task into Array
     taskArray.push({
         id: Index,
@@ -59,101 +60,91 @@ createBtn.addEventListener('click', (e) => {
     // Render tasks
     renderTasks();
     
-    console.log(taskArray);
-
+    sortTasksByCategory();
+    
     // Reseting Input bar
     inputBar.value = '';
-
+    
     // Reseting Due bar
     dueBar.value = '';
-
+    
     // Reseting Priority bar
     priBar.value = '';
-
-    //Resets placeholder
-    inputBar.setAttribute('placeholder', 'Enter task here');
-
-    //Resets placeholder
-    dueBar.setAttribute('placeholder', 'Enter Due Date here');
-
-    //Resets placeholder
-    priBar.setAttribute('placeholder', 'Enter Priority here');
-
-});
-
-// Functionality of 'close' button for '+'
-closeBtn.addEventListener('click', (e) => {
-
-    // Toggling of '+' and 'close' buttons
-    closeBtn.style.display = "none"; 
-    addBtn.style.display = "";
-
-    // Hiding of Task bar
-    taskBar.style.display = "none";
-
-    //Undim of tasks
-    taskCtr.style.opacity = "1";
-
-    //Resets placeholder
-    inputBar.setAttribute('placeholder', 'Enter task here');
-
-    //Resets placeholder
-    dueBar.setAttribute('placeholder', 'Enter Due Date here');
-
-    //Resets placeholder
-    priBar.setAttribute('placeholder', 'Enter Priority here');
-
-});
-
-// Functionality of 'EDIT' button
-editBtn.addEventListener('click', (e) => {
-
-    //Toggles buttons
-    editBtn.style.display = "none";
-    uneditBtn.style.display = "";
-
-    //Copies all editors into an array 
-    const tools = document.getElementsByClassName("editors");
     
     //Resets placeholder
     inputBar.setAttribute('placeholder', 'Enter task here');
-
+    
     //Resets placeholder
     dueBar.setAttribute('placeholder', 'Enter Due Date here');
-
+    
     //Resets placeholder
     priBar.setAttribute('placeholder', 'Enter Priority here');
+    
+});
 
-    //Shows tool buttons
+
+// Functionality of 'close' button for '+'
+closeBtn.addEventListener('click', (e) => {
+    
+    // Toggling of '+' and 'close' buttons
+    closeBtn.style.display = "none"; 
+    addBtn.style.display = "";
+    
+    // Hiding of Task bar
+    taskBar.style.display = "none";
+    
+    // Undim of tasks
+    taskCtr.style.opacity = "1";
+    
+    // Resets placeholder
+    resetPlaceholders();
+    
+});
+
+
+// Functionality of 'EDIT' button
+editBtn.addEventListener('click', (e) => {
+    
+    // Toggles buttons
+    editBtn.style.display = "none";
+    uneditBtn.style.display = "";
+    
+    // Copies all editors into an array 
+    const tools = document.getElementsByClassName("editors");
+    
+    // Resets placeholder
+    resetPlaceholders();
+    
+    // Shows tool buttons
     editMode = true;
     renderTasks();
     
 });
 
-//Functionality of CANCEL button
+
+// Functionality of CANCEL button
 uneditBtn.addEventListener('click', (e) => {
     
-    //Toggles buttons
+    // Toggles buttons
     uneditBtn.style.display = "none";
     editBtn.style.display = "";
     
-    //Copies all editors into an array 
+    // Copies all editors into an array 
     const tools = document.getElementsByClassName("editors");
     
-    //Hides tool buttons
+    // Hides tool buttons
     editMode = false;
     renderTasks();
 });
 
 
-
-
-
 const renderTasks = () => {
-
+    
     taskCtr.replaceChildren()
-
-    taskArray.forEach((item) => {
+    
+    const sortedTasks = sortTasksByCategory();
+    
+    sortedTasks.forEach((item) => {
         
         // To store Task and Editors in one div
         const taskDiv = document.createElement('div');
@@ -176,13 +167,15 @@ const renderTasks = () => {
         // Creating delete Editor
         const deleteTask = document.createElement('button');
         deleteTask.textContent = '🗑️';
-
+        
         deleteTask.addEventListener('click', () => {
             taskArray = taskArray.filter(task => task.id !== item.id);
-
+            
             renderTasks();
         });
-
+        
+        
+        // Functionality of editMode
         if(editMode){
             editors.style.display = "inline";
         }
@@ -197,7 +190,52 @@ const renderTasks = () => {
         taskDiv.appendChild(task);
         taskDiv.appendChild(dueDate);
         taskDiv.appendChild(editors);
-
+        
         taskCtr.appendChild(taskDiv);
     })
-}
+};
+
+let sortedArray = taskArray;
+
+function resetPlaceholders(){
+    // Resets input bar placeholder
+    inputBar.setAttribute('placeholder', 'Enter task here');
+
+    // Resets due bar placeholder
+    dueBar.setAttribute('placeholder', 'Enter Due Date here');
+
+    // Resets priority bar placeholder
+    priBar.setAttribute('placeholder', 'Enter Priority here');
+};
+
+
+function sortTasksByCategory(){
+
+    let sortedArray = [...taskArray];
+
+    switch(selectedSort.value){
+        case "Due_date":
+            // Sort by 'Due', smallest to largest date
+            sortedArray.sort((a, b) => {
+                return new Date(a.Due) - new Date(b.Due);
+            });
+
+            break;
+            
+        case "Priority": 
+
+            // Sort by 'Priority', smallest to largest number
+            sortedArray.sort((a, b) => {
+                return a.Priority - b.Priority;
+            });
+
+            break;
+            
+    };
+
+    return sortedArray
+};
+
+selectedSort.addEventListener('change', () => {
+    renderTasks();
+});

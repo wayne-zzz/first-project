@@ -10,7 +10,16 @@ const createBtn = document.getElementById("createBtn");
 const editBtn = document.getElementById("editBtn");
 const uneditBtn = document.getElementById("uneditBtn");
 const selectedSort = document.getElementById("sort");
+const currentDate = document.getElementById("date");
 
+function updateDate(){
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    const now = new Date().toLocaleDateString(undefined, options);
+    currentDate.textContent = `Date: ${now}`;
+}
+
+setInterval(updateDate, 1000);
+updateDate();
 
 const retrievedCheckedData = localStorage.getItem('savedCheckedTasks');
 const retrievedChecked = JSON.parse(retrievedCheckedData) || [];
@@ -273,7 +282,7 @@ const renderTasks = () => {
         checkedTaskDiv.appendChild(checkedDue);
         checkedTaskDiv.appendChild(uncheckTask);
         checkedTaskDiv.appendChild(deleteCheckTask);
-        
+
         taskCheckedCtr.appendChild(checkedTaskDiv);
         
     })

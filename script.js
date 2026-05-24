@@ -4,12 +4,18 @@ const taskBar = document.getElementById("taskBar");
 const dueBar = document.getElementById("dueBar");
 const priBar = document.getElementById("priBar");
 const taskCtr = document.getElementById("taskCtr");
+const taskCheckedCtr = document.getElementById("taskCheckedCtr");
 const inputBar = document.getElementById("inputBar");
 const createBtn = document.getElementById("createBtn");
 const editBtn = document.getElementById("editBtn");
 const uneditBtn = document.getElementById("uneditBtn");
 const selectedSort = document.getElementById("sort");
 
+
+const retrievedCheckedData = localStorage.getItem('savedCheckedTasks');
+const retrievedChecked = JSON.parse(retrievedCheckedData) || [];
+
+var checkedArray = [...retrievedChecked];
 
 const retrievedData = localStorage.getItem('savedTasks');
 const retrievedTasks = JSON.parse(retrievedData) || [];
@@ -134,8 +140,9 @@ uneditBtn.addEventListener('click', (e) => {
 
 const renderTasks = () => {
     
-    taskCtr.replaceChildren()
-    
+    taskCtr.replaceChildren();
+    taskCheckedCtr.replaceChildren();
+
     const sortedTasks = sortTasksByCategory();
     
     sortedTasks.forEach((item) => {
@@ -162,6 +169,20 @@ const renderTasks = () => {
         const deleteTask = document.createElement('button');
         deleteTask.textContent = '🗑️';
         
+        // Creating checkbox
+        const checkTask = document.createElement('input');
+        checkTask.setAttribute('type', 'checkbox');
+
+        checkTask.addEventListener('click', () => {
+            if(checkTask.checked){
+                taskArray = taskArray.filter(task => task.id !== item.id);
+                checkedArray.push(item);
+
+                updateApp();
+            }
+        })
+
+
         deleteTask.addEventListener('click', () => {
             taskArray = taskArray.filter(task => task.id !== item.id);
             
@@ -198,12 +219,67 @@ const renderTasks = () => {
         taskDiv.appendChild(task);
         taskDiv.appendChild(dueDate);
         taskDiv.appendChild(editors);
+        taskDiv.appendChild(checkTask);
         
         taskCtr.appendChild(taskDiv);
         
     });
 
+    checkedArray.forEach((item) => {
+        
+        const checkedTaskDiv = document.createElement('div');
+
+        const checkedTask = document.createElement('p');
+        checkedTask.textContent = item.Task;
+
+        const checkedDue = document.createElement('p');
+        checkedDue.textContent = item.Due;
+
+        // Creating checkbox
+        const uncheckTask = document.createElement('input');
+        uncheckTask.setAttribute('type', 'checkbox');
+        uncheckTask.checked = true;
+
+        // Creating delete Editor
+        const deleteCheckTask = document.createElement('button');
+        deleteCheckTask.textContent = '🗑️';
+
+        uncheckTask.addEventListener('click', () => {
+            if(!uncheckTask.checked){
+                checkedArray = checkedArray.filter(task => task.id !== item.id);
+                taskArray.push(item);
+
+                updateApp();
+            }
+        })
+
+
+        deleteCheckTask.addEventListener('click', () => {
+            checkedArray = checkedArray.filter(task => task.id !== item.id);
+            
+            updateApp();
+        });
+
+        
+        // Functionality of editMode
+        if(editMode){
+            deleteCheckTask.style.display = "inline";
+        }
+        else{
+            deleteCheckTask.style.display = "none";
+        }
+
+        checkedTaskDiv.appendChild(checkedTask);
+        checkedTaskDiv.appendChild(checkedDue);
+        checkedTaskDiv.appendChild(uncheckTask);
+        checkedTaskDiv.appendChild(deleteCheckTask);
+        
+        taskCheckedCtr.appendChild(checkedTaskDiv);
+        
+    })
+
 };
+
 
 
 function resetPlaceholders(){
@@ -224,6 +300,7 @@ function sortTasksByCategory(){
     
     switch(selectedSort.value){
         case "Due_date":
+
             // Sort by 'Due', smallest to largest date
             sortedArray.sort((a, b) => {
                 return new Date(a.Due) - new Date(b.Due);
@@ -231,7 +308,7 @@ function sortTasksByCategory(){
             
             break;
             
-            case "Priority": 
+        case "Priority": 
             
             // Sort by 'Priority', smallest to largest number
             sortedArray.sort((a, b) => {
@@ -253,9 +330,14 @@ function sortTasksByCategory(){
         localStorage.setItem('savedTasks', JSON.stringify(taskArray));
     };
     
+    const saveCheckedTasksStorage = () => {
+        localStorage.setItem('savedCheckedTasks', JSON.stringify(checkedArray));
+    };
+
     function updateApp(){
         renderTasks();
         saveTasksStorage();
+        saveCheckedTasksStorage();
     }
     
     renderTasks();

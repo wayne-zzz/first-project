@@ -11,15 +11,15 @@ const uneditBtn = document.getElementById("uneditBtn");
 const selectedSort = document.getElementById("sort");
 
 
-/* YET TO UNDERSTAND‼️*/
-var Index = taskArray.reduce((max, task) => {
-    return Math.max(max, task.id);
-}, 0);
-
 const retrievedData = localStorage.getItem('savedTasks');
 const retrievedTasks = JSON.parse(retrievedData) || [];
 
 var taskArray = [...retrievedTasks];
+
+
+var Index = taskArray.reduce((max, task) => {
+    return Math.max(max, task.id);
+}, 0);
 
 let editMode = false;
 
@@ -164,7 +164,24 @@ const renderTasks = () => {
         
         deleteTask.addEventListener('click', () => {
             taskArray = taskArray.filter(task => task.id !== item.id);
+            
+            updateApp();
+        });
         
+        
+        editTask.addEventListener('click', () => {       
+            const editedTask = prompt(
+                "Edit task:",
+                item.Task
+            );
+
+            if (editedTask === null) return;
+
+            item.Task = editedTask;
+
+            updateApp();
+        });
+
         
         // Functionality of editMode
         if(editMode){
@@ -229,7 +246,7 @@ function sortTasksByCategory(){
     };
     
     selectedSort.addEventListener('change', () => {
-        renderTasks();
+        updateApp();
     });
 
     const saveTasksStorage = () => {

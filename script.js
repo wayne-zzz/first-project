@@ -18,7 +18,6 @@ function updateDate(){
     currentDate.textContent = `Date: ${now}`;
 }
 
-setInterval(updateDate, 1000);
 updateDate();
 
 const retrievedCheckedData = localStorage.getItem('savedCheckedTasks');
@@ -64,7 +63,6 @@ createBtn.addEventListener('click', (e) => {
     //Error message when any bar is empty
     if(x.trim() === "" || y.trim() === "" || z.trim() === ""){
         inputBar.setAttribute('placeholder', 'Task bar empty! Please enter a task before adding');
-        dueBar.setAttribute('placeholder', 'Due Date bar empty! Please enter a date before adding');
         priBar.setAttribute('placeholder', 'Priority bar empty! Please enter a number before adding');
         return;
     }
@@ -155,9 +153,16 @@ const renderTasks = () => {
     const sortedTasks = sortTasksByCategory();
     
     sortedTasks.forEach((item) => {
+
+        const leftSide = document.createElement('div');
+        leftSide.className = 'leftSide';
+
+        const rightSide = document.createElement('div');
+        rightSide.className = 'rightSide';
         
         // To store Task and Editors in one div
         const taskDiv = document.createElement('div');
+        taskDiv.className = 'taskDiv';
         
         // Creating Task
         const task = document.createElement('p');
@@ -190,7 +195,7 @@ const renderTasks = () => {
                 updateApp();
             }
         })
-
+        
 
         deleteTask.addEventListener('click', () => {
             taskArray = taskArray.filter(task => task.id !== item.id);
@@ -224,11 +229,15 @@ const renderTasks = () => {
         // Adding to index.html
         editors.appendChild(editTask);
         editors.appendChild(deleteTask);
-        
-        taskDiv.appendChild(task);
-        taskDiv.appendChild(dueDate);
-        taskDiv.appendChild(editors);
-        taskDiv.appendChild(checkTask);
+
+        leftSide.appendChild(checkTask);
+        leftSide.appendChild(task);
+
+        rightSide.appendChild(dueDate);
+        rightSide.appendChild(editors);
+
+        taskDiv.appendChild(leftSide);
+        taskDiv.appendChild(rightSide);
         
         taskCtr.appendChild(taskDiv);
         
@@ -237,6 +246,7 @@ const renderTasks = () => {
     checkedArray.forEach((item) => {
         
         const checkedTaskDiv = document.createElement('div');
+        checkedTaskDiv.className = 'checkedTaskDiv';
 
         const checkedTask = document.createElement('p');
         checkedTask.textContent = item.Task;
@@ -261,7 +271,7 @@ const renderTasks = () => {
                 updateApp();
             }
         })
-
+    
 
         deleteCheckTask.addEventListener('click', () => {
             checkedArray = checkedArray.filter(task => task.id !== item.id);
@@ -294,9 +304,6 @@ const renderTasks = () => {
 function resetPlaceholders(){
     // Resets input bar placeholder
     inputBar.setAttribute('placeholder', 'Enter task here');
-    
-    // Resets due bar placeholder
-    dueBar.setAttribute('placeholder', 'Enter Due Date here');
     
     // Resets priority bar placeholder
     priBar.setAttribute('placeholder', 'Enter Priority here');

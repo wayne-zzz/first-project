@@ -8,21 +8,31 @@
 </head>
 <body>
     <div>
-        <h1 id="date">Date: </h1>
+        <h4 id="date">Date: </h4>
     </div>
 
     <h2 id="Title">
         Task Manager
     </h2>
 
-    <div id="addBtn">
-        <button id="plusSign">+</button>
-        <button id="closeSign" style="display: none">Close</button>
-    </div>
+    <div id="addEdit">
+        <div id="addBtn">
+            <button id="plusSign" class="btns">+</button>
+            <button id="closeSign" style="display: none" class="btns">Close</button>
+        </div>
+    
+        <div id="EditBtn">
+            <button id="editBtn" class="btns">EDIT</button>
+            <button id="uneditBtn" style="display: none" class="btns">CLOSE</button>
+        </div>
 
-    <div id="EditBtn">
-        <button id="editBtn">EDIT</button>
-        <button id="uneditBtn" style="display: none">CLOSE</button>
+        <div id="sortDiv">
+            <label for="sort by">Sort by</label>
+            <select name="sort by" id="sort">
+                <option value="Due_date">Due Date</option>
+                <option value="Priority">Priority</option>
+            </select>
+        </div>
     </div>
 
     <div id="taskBar" style="display: none">
@@ -32,20 +42,13 @@
         <button id="createBtn">Add</button>
     </div>
 
-    <p>Tasks:</p>
-
-    <label for="sort by">Sort by</label>
-    <select name="sort by" id="sort">
-        <option value="Due_date">Due Date</option>
-        <option value="Priority">Priority</option>
-    </select>
 
     <div id="taskCtr">
         
     </div>
 
     <div id="taskCheckedCtr">
-        
+
     </div>
 
     <script src="script.js"></script>

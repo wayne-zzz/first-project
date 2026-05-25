@@ -1,0 +1,100 @@
+body {
+    background-color: #0f172a;
+    color: #f8fafc;
+    font-family: Arial, sans-serif;
+    padding: 20px;
+
+    max-width: 800px;
+    margin: auto;
+}
+
+#Title,
+#date{
+    text-align: center;
+}
+
+.btns {
+    background-color: #3b82f6;
+    margin-left: 10px;
+}
+
+#addEdit {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 20px;
+}
+
+/*magic TAKE NOTE!*/
+.taskDiv,
+.checkedTaskDiv {
+    background-color: #1e293b;
+
+    margin-bottom: 12px;
+    padding: 14px 18px;
+
+    border-radius: 12px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.checkedTaskDiv{
+    text-decoration: line-through;
+}
+
+
+button {
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+button:hover {
+    opacity: 0.8;
+}
+
+.leftSide,
+.rightSide {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.rightSide p {
+    width: 120px;
+    text-align: right;
+}
+
+#taskBar {
+    display: flex;
+    gap: 10px;
+
+    margin-bottom: 20px;
+    margin-top: 20px;
+
+    justify-content: center;
+}
+
+
+#taskBar input {
+    padding: 10px;
+
+    border-radius: 8px;
+    border: none;
+
+    background-color: #1e293b;
+    color: white;
+}
+
+
+#createBtn {
+    background-color: #3b82f6;
+    color: white;
+
+    border: none;
+    border-radius: 8px;
+
+    padding: 10px 16px;
+}

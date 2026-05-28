@@ -187,36 +187,38 @@ const renderTasks = () => {
         const checkTask = document.createElement('input');
         checkTask.setAttribute('type', 'checkbox');
 
-        checkTask.addEventListener('click', () => {
-            if(checkTask.checked){
-                taskArray = taskArray.filter(task => task.id !== item.id);
-                checkedArray.push(item);
-
-                updateApp();
-            }
-        })
         
-
-        deleteTask.addEventListener('click', () => {
+        
+        deleteTask.addEventListener('click', (e) => {
+            e.stopPropagation();
+            
             taskArray = taskArray.filter(task => task.id !== item.id);
             
             updateApp();
         });
         
         
-        editTask.addEventListener('click', () => {       
+        editTask.addEventListener('click', (e) => {  
+            e.stopPropagation();
+            
             const editedTask = prompt(
                 "Edit task:",
                 item.Task
             );
-
+            
             if (editedTask === null) return;
-
+            
             item.Task = editedTask;
-
+            
             updateApp();
         });
+        
+        taskDiv.addEventListener('click', () => {
+            taskArray = taskArray.filter(task => task.id !== item.id);
+            checkedArray.push(item);
 
+            updateApp();
+        })
         
         // Functionality of editMode
         if(editMode){
@@ -248,11 +250,19 @@ const renderTasks = () => {
         const checkedTaskDiv = document.createElement('div');
         checkedTaskDiv.className = 'checkedTaskDiv';
 
+        const leftCheckedTask = document.createElement('div');
+        leftCheckedTask.className = 'leftSide';
+        
+        const rightCheckedTask = document.createElement('div');
+        rightCheckedTask.className = 'rightSide';
+
         const checkedTask = document.createElement('p');
         checkedTask.textContent = item.Task;
+        checkedTask.className = 'checkedTask';
 
         const checkedDue = document.createElement('p');
         checkedDue.textContent = item.Due;
+        checkedDue.className = 'checkedDue';
 
         // Creating checkbox
         const uncheckTask = document.createElement('input');
@@ -263,17 +273,17 @@ const renderTasks = () => {
         const deleteCheckTask = document.createElement('button');
         deleteCheckTask.textContent = '🗑️';
 
-        uncheckTask.addEventListener('click', () => {
-            if(!uncheckTask.checked){
-                checkedArray = checkedArray.filter(task => task.id !== item.id);
-                taskArray.push(item);
+        checkedTaskDiv.addEventListener('click', () => {
+            checkedArray = checkedArray.filter(task => task.id !== item.id);
+            taskArray.push(item);
 
-                updateApp();
-            }
+            updateApp();
         })
     
 
-        deleteCheckTask.addEventListener('click', () => {
+        deleteCheckTask.addEventListener('click', (e) => {
+            e.stopPropagation();
+
             checkedArray = checkedArray.filter(task => task.id !== item.id);
             
             updateApp();
@@ -288,10 +298,15 @@ const renderTasks = () => {
             deleteCheckTask.style.display = "none";
         }
 
-        checkedTaskDiv.appendChild(checkedTask);
-        checkedTaskDiv.appendChild(checkedDue);
-        checkedTaskDiv.appendChild(uncheckTask);
-        checkedTaskDiv.appendChild(deleteCheckTask);
+        leftCheckedTask.appendChild(uncheckTask);
+        leftCheckedTask.appendChild(checkedTask);
+
+
+        rightCheckedTask.appendChild(checkedDue);
+        rightCheckedTask.appendChild(deleteCheckTask);
+        
+        checkedTaskDiv.appendChild(leftCheckedTask);
+        checkedTaskDiv.appendChild(rightCheckedTask);
 
         taskCheckedCtr.appendChild(checkedTaskDiv);
         

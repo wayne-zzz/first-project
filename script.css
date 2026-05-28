@@ -13,9 +13,18 @@ body {
     text-align: center;
 }
 
+.btns:hover {
+    background-color: #2563eb;
+    transform: translateY(-0.5px);
+}
+
 .btns {
     background-color: #3b82f6;
+    border: none;
+    padding: 8px 14px;
     margin-left: 10px;
+    border-radius: 8px; 
+    font-weight: 600;
 }
 
 #addEdit {
@@ -41,8 +50,10 @@ body {
     align-items: center;
 }
 
-.checkedTaskDiv{
+.checkedTask,
+.checkedDue {
     text-decoration: line-through;
+    color: #f8fafc76
 }
 
 
@@ -66,6 +77,19 @@ button:hover {
     width: 120px;
     text-align: right;
 }
+
+.leftCheckedSide,
+.rightCheckedSide {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.rightCheckedSide p {
+    width: 120px;
+    text-align: right;
+}
+
 
 #taskBar {
     display: flex;
@@ -97,4 +121,11 @@ button:hover {
     border-radius: 8px;
 
     padding: 10px 16px;
+}
+
+#sort {
+    background-color: #ffffff7f;
+    padding: 5px;
+    margin-left: 10px;
+    border-radius: 5px;
 }
